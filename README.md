@@ -12,7 +12,9 @@ yuu-eguci/yolov5
 ```bash
 git clone https://github.com/yuu-eguci/yolov5
 
-# NOTE: なぜか pipenv ではうまくいかなかった。原因未調査。
+# NOTE: なぜか pipenv では Locking Failed! が出る。
+#       ンモー、機械学習系はこんなんばっかし。
+#       pipenv でやるんだったら Locking Failed! を見たあとに、 pip install -r requirements.txt しましょ。
 python3 -m pip install -r requirements.txt
 
 # 学習させる。
