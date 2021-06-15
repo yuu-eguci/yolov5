@@ -26,6 +26,10 @@ python3 train.py --img 640 --batch 16 --epochs 10 --data coco128.yaml --weights 
 python3 detect.py --source data/images --weights yolov5s.pt --conf 0.50
 ```
 
+### Results
+
+![README-image](https://user-images.githubusercontent.com/28250432/121980826-9bbd6a00-cdc7-11eb-9654-3a934e05af4c.png)
+
 ## Until seeing images in the dataset
 
 ### Install labelimg
