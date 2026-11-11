@@ -11,6 +11,7 @@ import re
 import signal
 import time
 import urllib
+from importlib import metadata
 from itertools import repeat
 from multiprocessing.pool import ThreadPool
 from pathlib import Path
@@ -19,10 +20,11 @@ from subprocess import check_output
 import cv2
 import numpy as np
 import pandas as pd
-import pkg_resources as pkg
 import torch
 import torchvision
 import yaml
+from packaging.requirements import Requirement
+from packaging.version import parse as parse_version
 
 from utils.google_utils import gsutil_getsize
 from utils.metrics import fitness
@@ -139,7 +141,7 @@ def check_git_status(err_msg=', for updates see https://github.com/ultralytics/y
 def check_python(minimum='3.6.2', required=True):
     # Check current python version vs. required python version
     current = platform.python_version()
-    result = pkg.parse_version(current) >= pkg.parse_version(minimum)
+    result = parse_version(current) >= parse_version(minimum)
     if required:
         assert result, f'Python {minimum} required by YOLOv5, but Python {current} is currently installed'
     return result
@@ -154,14 +156,16 @@ def check_requirements(requirements='requirements.txt', exclude=()):
         if not file.exists():
             print(f"{prefix} {file.resolve()} not found, check failed.")
             return
-        requirements = [f'{x.name}{x.specifier}' for x in pkg.parse_requirements(file.open()) if x.name not in exclude]
+        requirements = [x.split('#')[0].strip() for x in file.read_text().splitlines()]
+        requirements = [x for x in requirements if x and Requirement(x).name not in exclude]
     else:  # list or tuple of packages
         requirements = [x for x in requirements if x not in exclude]
 
     n = 0  # number of packages updates
     for r in requirements:
         try:
-            pkg.require(r)
+            r_ = Requirement(r)
+            assert r_.specifier.contains(metadata.version(r_.name), prereleases=True), f'{r} not satisfied'
         except Exception as e:  # DistributionNotFound or VersionConflict if requirements not met
             print(f"{prefix} {r} not found and is required by YOLOv5, attempting auto-update...")
             try:
