@@ -13,10 +13,12 @@ ultralytics/yolov5 をフォークしたリポジトリです。次の 2 つを�
 ```bash
 git clone https://github.com/yuu-eguci/yolov5
 cd yolov5
+python3.11 -m venv .venv
+source .venv/bin/activate
 python3 -m pip install -r requirements.txt
 ```
 
-Python 3.11 と、requirements.txt から入る最新の依存パッケージで、CPU での物体検出を確認しています。
+Python 3.11 と、requirements.txt から入る最新の依存パッケージで、CPU での物体検出を確認しています。torch のパッケージが公開されていない新しい Python ではインストールに失敗するため、Python 3.11 の仮想環境を使ってください。`python3.11` がない場合は、pyenv などで Python 3.11 を入れてください。以降のコマンドは、仮想環境を有効にした状態で実行します。
 
 Linux で GPU を使わない場合は、先に CPU 版の torch を入れるとダウンロード量を減らせます。
 
