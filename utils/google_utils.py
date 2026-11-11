@@ -7,7 +7,6 @@ import time
 import urllib
 from pathlib import Path
 
-import requests
 import torch
 
 
@@ -49,20 +48,11 @@ def attempt_download(file, repo='ultralytics/yolov5'):  # from utils.google_util
             safe_download(file=name, url=url, min_bytes=1E5)
             return name
 
-        # GitHub assets
+        # GitHub assets, pinned to v5.0: weights from later releases cannot be loaded by this code
         file.parent.mkdir(parents=True, exist_ok=True)  # make parent dir (if required)
-        try:
-            response = requests.get(f'https://api.github.com/repos/{repo}/releases/latest').json()  # github api
-            assets = [x['name'] for x in response['assets']]  # release assets, i.e. ['yolov5s.pt', 'yolov5m.pt', ...]
-            tag = response['tag_name']  # i.e. 'v1.0'
-        except:  # fallback plan
-            assets = ['yolov5s.pt', 'yolov5m.pt', 'yolov5l.pt', 'yolov5x.pt',
-                      'yolov5s6.pt', 'yolov5m6.pt', 'yolov5l6.pt', 'yolov5x6.pt']
-            try:
-                tag = subprocess.check_output('git tag', shell=True, stderr=subprocess.STDOUT).decode().split()[-1]
-            except:
-                tag = 'v5.0'  # current release
-
+        tag = 'v5.0'
+        assets = ['yolov5s.pt', 'yolov5m.pt', 'yolov5l.pt', 'yolov5x.pt',
+                  'yolov5s6.pt', 'yolov5m6.pt', 'yolov5l6.pt', 'yolov5x6.pt', 'yolov5s-VOC.pt']
         if name in assets:
             safe_download(file,
                           url=f'https://github.com/{repo}/releases/download/{tag}/{name}',
